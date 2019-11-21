@@ -21,6 +21,10 @@ Some funny things for mycroft, mostly quotes from movies
 * "what would arnold say"
 * "what would glados say"
 * "what would bender say"
+* "ho ho ho"
+* "merry christmas"
+* "santa clause"
+
 
 ## Credits 
 JarbasAI
