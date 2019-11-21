@@ -90,7 +90,12 @@ class EasterEggsSkill(MycroftSkill):
         self.register_intent(intent,
                              self.handle_glados_intent)
 
-        self.audio_service = AudioService(self.emitter)
+        intent = IntentBuilder("HolidayIntent"). \
+            require("HolidayKeyword").build()
+        self.register_intent(intent,
+                             self.handle_holiday_intent)
+
+        self.audio_service = AudioService(self.bus)
 
     def handle_stardate_intent(self, message):
         sd = Stardate().toStardate()
@@ -166,6 +171,15 @@ class EasterEggsSkill(MycroftSkill):
 
     def handle_glados_intent(self, message):
         path = dirname(__file__) + "/sounds/glados"
+        files = [mp3 for mp3 in listdir(path) if ".mp3" in mp3]
+        if len(files):
+            mp3 = path + "/" + random.choice(files)
+            self.audio_service.play(mp3)
+        else:
+            self.speak_dialog("bad_file")
+
+    def handle_holiday_intent(self, message):
+        path = dirname(__file__) + "/sounds/holiday"
         files = [mp3 for mp3 in listdir(path) if ".mp3" in mp3]
         if len(files):
             mp3 = path + "/" + random.choice(files)
@@ -327,7 +341,7 @@ class Stardate():
 
         sd = re.findall(self.sdreg, stardate)
         if not len(sd):
-            print "Invalid stardate format"
+            print ("Invalid stardate format")
             return
         sd = sd[0]
         nissue = int(sd[0])
@@ -339,7 +353,7 @@ class Stardate():
         if (integer > 99999) or \
                 (not isneg and nissue == twenty and integer > 5005) or \
                 ((isneg or nissue < twenty) and integer > 9999):
-            print "Integer part is out of range"
+            print ("Integer part is out of range")
             return
 
         if isneg or nissue <= twenty:
